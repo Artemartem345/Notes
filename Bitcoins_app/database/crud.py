@@ -2,7 +2,7 @@ from datetime import datetime
 import config
 import pydantic_models
 import bit
-from db import *
+from database.db import *
 
 # wallet = bit.Key()
 # print(f'Balance: {wallet.get_balance()}')
@@ -100,3 +100,67 @@ def update_all_wallets():
         # печатаем для наглядности
         print(wallet.address, wallet.balance)
     return True
+
+
+@db_session
+def get_user_by_id(id: int):
+    return User[id]
+
+
+@db_session
+def get_user_by_tg_id(tg_id: int):
+    return User.select(lambda u: u.tg_ID == tg_id).first()
+
+
+@db_session
+def get_transaction_info(transaction: pydantic_models.Transaction):
+    return {"id": transaction.id,
+            "sender": transaction.sender if transaction.sender else None,
+            "receiver": transaction.receiver if transaction.receiver else None,
+            "sender_wallet": transaction.sender_wallet if transaction.sender_wallet else None,
+            "receiver_wallet": transaction.receiver_wallet if transaction.receiver_wallet else None,
+            "sender_address": transaction.sender_address,
+            "receiver_address": transaction.receiver_address,
+            "amount_btc_with_fee": transaction.amount_btc_with_fee,
+            "amount_btc_without_fee": transaction.amount_btc_without_fee,
+            "fee": transaction.fee,
+            "date_of_transaction": transaction.date_of_transaction,
+            "tx_hash": transaction.tx_hash}
+
+
+@db_session
+def get_wallet_info(wallet: pydantic_models.Wallet):
+    wallet = update_wallet_balance(wallet)
+    return {"id": wallet.id if wallet.id else None,
+            "user": wallet.user if wallet.user else None,
+            "balance": wallet.balance if wallet.balance else None,
+            "private_key": wallet.private_key if wallet.private_key else None,
+            "address": wallet.address if wallet.address else None,
+            "sended_transactions": wallet.sended_transactions if wallet.sended_transactions else [],
+            "received_transactions": wallet.received_transactions if wallet.received_transactions else []}
+
+
+@db_session
+def get_user_info(user: pydantic_models.User):
+    return {"id": user.id,
+            "tg_ID": user.tg_ID if user.tg_ID else None,
+            "nick": user.nick if user.nick else None,
+            "create_date": user.create_date,
+            # получаем все данные по кошельку
+            "wallet": get_wallet_info(user.wallet),
+            "sended_transactions": user.sended_transactions if user.sended_transactions else [],
+            "received_transactions": user.received_transactions if user.received_transactions else []}
+
+
+@db_session
+def update_user(user: pydantic_models.User_to_update):
+    user_to_update = User[user.id]
+    if user.tg_ID:
+        user_to_update.tg_ID = user.tg_ID
+    if user.nick:
+        user_to_update.nick = user.nick
+    if user.create_date:
+        user_to_update.create_date = user.create_date
+    if user.wallet:
+        user_to_update.wallet = user.wallet
+    return user_to_update

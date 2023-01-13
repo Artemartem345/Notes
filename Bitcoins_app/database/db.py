@@ -1,4 +1,4 @@
-from pony.orm import *
+from database.models import *
 import models
 from models import *
 
