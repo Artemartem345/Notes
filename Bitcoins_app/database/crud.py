@@ -74,3 +74,29 @@ def create_transaction(
                               date_of_transaction=datetime.now(),
                               tx_hash=tx_hash)
     return transaction
+
+
+@db_session
+def update_wallet_balance(wallet: pydantic_models.Wallet):
+    # проверяем в не в тестовой сети ли мы
+    testnet = False if not wallet.private_key.startswith('c') else True
+    # получаем объект из Bit, для работы с биткоинами
+    bit_wallet = bit.Key(
+        wallet.private_key) if not testnet else bit.PrivateKeyTestnet(wallet.private_key)
+    # получаем баланс кошелька и присваиваем значение кошельку в нашей бд
+    wallet.balance = bit_wallet.get_balance()
+    return wallet
+
+
+
+
+
+@db_session
+def update_all_wallets():
+    # с помощью генераторного выражения выбираем все кошельки, с помощью функции select()
+    for wallet in select(w for w in Wallet)[:]:
+        # обновляем баланс кошелька
+        update_wallet_balance(wallet)
+        # печатаем для наглядности
+        print(wallet.address, wallet.balance)
+    return True
