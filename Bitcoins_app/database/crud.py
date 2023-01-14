@@ -168,5 +168,3 @@ def update_user(user: pydantic_models.User_to_update):
 
 
 
-def main_function(*args, **kwargs):
-    pass
