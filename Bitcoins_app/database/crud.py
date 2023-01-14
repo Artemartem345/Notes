@@ -164,3 +164,9 @@ def update_user(user: pydantic_models.User_to_update):
     if user.wallet:
         user_to_update.wallet = user.wallet
     return user_to_update
+
+
+
+
+def main_function(*args, **kwargs):
+    pass
