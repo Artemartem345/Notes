@@ -1,5 +1,9 @@
 import telebot
 import config
+import aiogram
+import pydantic_models
+
+
 
 
 bot = telebot.TeleBot(config.bot_token)
@@ -92,7 +96,7 @@ def print_me(message):
     bot.send_message(message.chat.id, text, reply_markup=markup)
 
 
-@bot.message_handler(func=lambda message: message.from_user.id == config.tg_admin_id and message.text == "Админка")
+@bot.message_handler(func=lambda message: message.from_user.id == config.new_tg_admin_id and message.text == "Админка")
 def admin_panel(message):
     markup = telebot.types.ReplyKeyboardMarkup(
         row_width=2, resize_keyboard=True)
@@ -106,3 +110,111 @@ def admin_panel(message):
 
 # запускаем бота этой командой:
 bot.infinity_polling()
+
+
+
+
+users = config.fake_database['users']
+
+
+# делаем проверку на админ ли боту пишет проверяем текст сообщения
+@bot.message_handler(func=lambda message: message.from_user.id == config.new_tg_admin_id and message.text == "Все юзеры")
+def all_users(message):
+    text = f'Юзеры:'
+    # создаем объект с инлайн-разметкой
+    inline_markup = telebot.types.InlineKeyboardMarkup()
+    for user in users:  # в цикле создаем 3 кнопки и добавляем их поочередно в нашу разметку
+        inline_markup.add(telebot.types.InlineKeyboardButton(text=f'Юзер: {user["name"]}',
+                                                             callback_data=f"user_{user['id']}"))
+        # так как мы добавляем кнопки по одной, то у нас юзеры будут в 3 строчки
+        # в коллбеке у нас будет текст, который содержит айди юзеров
+    # прикрепляем нашу разметку к ответному сообщению
+    bot.send_message(message.chat.id, text, reply_markup=inline_markup)
+
+
+# в качестве условия для обработки принимает только лямбда-функции
+# хендлер принимает объект от CallbackQuery()
+@bot.callback_query_handler(func=lambda call: True)
+def callback_query(call):
+    user_id = call.data.split('_')[1]  # получаем айди юзера из нашей строки
+    # распечатаем коллбек, чтобы посмотреть на все его возможные свойства
+    print(call)
+    for user in users:
+        if str(user['id']) == user_id:
+            bot.send_message(call.from_user.id, text=f"Юзер:\n{user}")
+            print(f"Запрошен {user}")
+            break
+
+
+    bot.edit_message_text(text="Новый текст сообщения",
+                      chat_id=call.message.chat.id,      # айди чата
+                      # айди сообщения, которое нужно отредактировать
+                      message_id=call.message.message_id,
+                        reply_markup=markup)
+
+
+# хендлер принимает объект Call
+@bot.callback_query_handler(func=lambda call: True)
+def callback_query(call):
+    query_type = call.data.split('_')[0]  # получаем тип запроса
+    if query_type == 'user':
+        # получаем айди юзера из нашей строки
+        user_id = call.data.split('_')[1]
+        inline_markup = telebot.types.InlineKeyboardMarkup()
+        for user in users:
+            if str(user['id']) == user_id:
+                inline_markup.add(telebot.types.InlineKeyboardButton(text="Назад", callback_data='users'),
+                                  telebot.types.InlineKeyboardButton(text="Удалить юзера",
+                                                                     callback_data=f'delete_user_{user_id}'))
+
+                bot.edit_message_text(text=f'Данные по юзеру:\n'
+                                           f'ID: {user["id"]}\n'
+                                           f'Имя: {user["name"]}\n'
+                                           f'Ник: {user["nick"]}\n'
+                                           f'Баланс: {user["balance"]}',
+                                      chat_id=call.message.chat.id,
+                                      message_id=call.message.message_id,
+                                      reply_markup=inline_markup)
+                print(f"Запрошен {user}")
+                break
+
+    if query_type == 'users':
+        inline_markup = telebot.types.InlineKeyboardMarkup()
+        for user in users:
+            inline_markup.add(telebot.types.InlineKeyboardButton(text=f'Юзер: {user["name"]}',
+                                                                 callback_data=f"user_{user['id']}"))
+        bot.edit_message_text(text="Юзеры:",
+                              chat_id=call.message.chat.id,
+                              message_id=call.message.message_id,
+                              reply_markup=inline_markup)  # прикрепляем нашу разметку к ответному сообщению
+
+    if query_type == 'delete' and call.data.split('_')[1] == 'user':
+        # получаем и превращаем наш айди в число
+        user_id = int(call.data.split('_')[2])
+        for i, user in enumerate(users):
+            print(user['name'])
+            if user['id'] == user_id:
+                print(f'Удален Юзер: {users[i]}')
+                users.pop(i)
+        inline_markup = telebot.types.InlineKeyboardMarkup()
+        for user in users:
+            inline_markup.add(telebot.types.InlineKeyboardButton(text=f'Юзер: {user["name"]}',
+                                                                 callback_data=f"user_{user['id']}"))
+        bot.edit_message_text(text="Юзеры:",
+                              chat_id=call.message.chat.id,
+                              message_id=call.message.message_id,
+                              reply_markup=inline_markup)  # прикрепляем нашу разметку
+
+
+@bot.message_handler(func=lambda message: message.from_user.id == config.new_tg_admin_id and message.text == "Общий баланс")
+def total_balance(message):
+    markup = telebot.types.ReplyKeyboardMarkup(
+        row_width=2, resize_keyboard=True)
+    btn1 = telebot.types.KeyboardButton('Меню')
+    btn2 = telebot.types.KeyboardButton('Админка')
+    markup.add(btn1, btn2)
+    balance = 0
+    for user in users:
+        balance += user['balance']
+    text = f'Общий баланс: {balance}'
+    bot.send_message(message.chat.id, text, reply_markup=markup)
