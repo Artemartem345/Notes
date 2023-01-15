@@ -1,6 +1,7 @@
 Private_key = 'L5PNfsvCs22w8dCXpEjr3LpcvAP4AVFKMCjecPy4wqH3wAS1Zqa8'
 bot_token = '5619531865:AAHU2ZL0eo7CWYgHs6f-ol154zQYnllELkg'
 tg_admin_id = '1134872281'
+new_tg_admin_id = int(tg_admin_id)
 
 fake_database = {'users': [
     {
