@@ -9,17 +9,6 @@ import pydantic_models
 bot = telebot.TeleBot(config.bot_token)
 
 
-# @bot.message_handler(commands=['start'])
-# def start_message(message):
-#     bot.send_message(message.chat.id, f'Привет {message.from_user.full_name}, я твой бот-криптокошелек, \n'
-#                                       'у меня ты можешь хранить и отправлять биткоины')
-
-# a = bot.user.to_dict()
-# print(a)
-# if __name__ == '__main__':
-    # bot.infinity_polling()
-
-
 @bot.message_handler(commands=['start'])
 def start_message(message):
     # создаем объект для работы с кнопками (row_width - определяет количество кнопок по ширине)
