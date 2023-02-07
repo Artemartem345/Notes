@@ -4,10 +4,6 @@ import pydantic_models
 import bit
 from database.db import *
 
-# wallet = bit.Key()
-# print(f'Balance: {wallet.get_balance()}')
-# print(f'Address: {wallet.address}')
-# print(f'Private key: {wallet.to_wif()}')
 
 
 @db_session
