@@ -1,8 +1,7 @@
 import pydantic
 from datetime import datetime
 
-class User(pydantic.BaseModel):
-    pass
+
 
 
 class User(pydantic.BaseModel):
