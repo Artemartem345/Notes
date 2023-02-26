@@ -161,6 +161,9 @@ def update_user(user: pydantic_models.User_to_update):
         user_to_update.wallet = user.wallet
     return user_to_update
 
-
-
+class Transaction:
+    
+    
+    def get_user_transactions(user):
+        user.select()
 
