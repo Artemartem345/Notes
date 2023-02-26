@@ -2,4 +2,6 @@
 
 2. Notes on Python
 
-Run Python app.py
+ for run project:
+ 1. cd app.py
+ 2. python app.py
