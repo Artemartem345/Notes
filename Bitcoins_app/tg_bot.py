@@ -1,7 +1,7 @@
 import telebot
 import config
 import pydantic_models
-
+import client
 bot = telebot.TeleBot(config.bot_token)
 
 
@@ -180,8 +180,77 @@ def total_balance(message):
     bot.send_message(message.chat.id, text, reply_markup=markup)
 
 
+
+
+
+states_list = ["ADDRESS", "AMOUNT", "CONFIRM"]
+states_of_users = {}
+
+
+@bot.message_handler(regexp='Перевести')
+def start_transaction(message):
+    markup = telebot.types.ReplyKeyboardMarkup(
+        row_width=2, resize_keyboard=True)
+    btn1 = telebot.types.KeyboardButton('Меню')
+    markup.add(btn1)
+    text = f'Введите адрес кошелька куда хотите перевести: '
+    bot.send_message(message.chat.id, text, reply_markup=markup)
+    # тут мы даём юзеру состояние при котором ему будет возвращаться следующее сообщение
+    states_of_users[message.from_user.id] = {"STATE": "ADDRESS"}
+
+
+@bot.message_handler(func=lambda message: states_of_users.get(message.from_user.id)["STATE"] == 'ADDRESS')
+def get_amount_of_transaction(message):
+    if message.text == "Меню":
+        del states_of_users[message.from_user.id]
+        menu(message)
+    markup = telebot.types.ReplyKeyboardMarkup(
+        row_width=2, resize_keyboard=True)
+    btn1 = telebot.types.KeyboardButton('Меню')
+    markup.add(btn1)
+    text = f'Введите сумму в сатоши, которую хотите перевести: '
+    bot.send_message(message.chat.id, text, reply_markup=markup)
+    # тут мы даём юзеру состояние при котором ему будет возвращаться следующее сообщение
+    states_of_users[message.from_user.id]["STATE"] = "AMOUNT"
+    states_of_users[message.from_user.id]["ADDRESS"] = message.text
+
+
+@bot.message_handler(func=lambda message: states_of_users.get(message.from_user.id)["STATE"] == 'AMOUNT')
+def get_confirmation_of_transaction(message):
+    if message.text == "Меню":
+        del states_of_users[message.from_user.id]
+        menu(message)
+    markup = telebot.types.ReplyKeyboardMarkup(
+        row_width=2, resize_keyboard=True)
+    btn1 = telebot.types.KeyboardButton('Меню')
+    markup.add(btn1)
+    if message.text.isdigit():
+        text = f'Вы хотите перевести {message.text} сатоши,\n' \
+               f'на биткоин-адрес {states_of_users[message.from_user.id]["ADDRESS"]}: '
+        confirm = telebot.types.KeyboardButton('Подтверждаю')
+        markup.add(confirm)
+        bot.send_message(message.chat.id, text, reply_markup=markup)
+        # тут мы даём юзеру состояние при котором ему будет возвращаться следующее сообщение
+        states_of_users[message.from_user.id]["STATE"] = "CONFIRM"
+        states_of_users[message.from_user.id]["AMOUNT"] = int(message.text)
+    else:
+        text = f'Вы ввели не число, попробуйте заново: '
+        bot.send_message(message.chat.id, text, reply_markup=markup)
+
+
+@bot.message_handler(func=lambda message: states_of_users.get(message.from_user.id)["STATE"] == 'CONFIRM')
+def get_hash_of_transaction(message):
+    if message.text == "Меню":
+        del states_of_users[message.from_user.id]
+        menu(message)
+    elif message.text == "Подтверждаю":
+        bot.send_message(message.chat.id, f" Ваша транзакция: "+str(client.create_transaction(message.from_user.id,
+                                                                                              states_of_users[message.from_user.id]['ADDRESS'],
+                                                                                              states_of_users[message.from_user.id]['AMOUNT'])))
+        del states_of_users[message.from_user.id]
+        menu(message)
+
+
 # запускаем бота этой командой:
 bot.infinity_polling()
-
-
 
