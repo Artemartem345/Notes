@@ -64,3 +64,9 @@ def get_users():
     for user in crud.User.select()[:]:
         users.append(user.to_dict())
     return users
+
+
+@api.get("/get_user_transactions/{user_id:int}")
+def get_user_transactions(user_id: int):
+    transaction_list = get_transactions_for_user(user_id)
+    return transaction_list

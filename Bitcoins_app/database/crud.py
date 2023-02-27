@@ -161,9 +161,22 @@ def update_user(user: pydantic_models.User_to_update):
         user_to_update.wallet = user.wallet
     return user_to_update
 
+
 class Transaction:
-    
-    
-    def get_user_transactions(user):
-        user.select()
+    def __init__(self, sender_id, recipient_id, amount):
+        self.sender_id = sender_id
+        self.recipient_id = recipient_id
+        self.amount = amount
+
+    def __str__(self):
+        return f"Transaction: from {self.sender_id} to {self.recipient_id} for {self.amount}"
+
+
+def get_user_transactions(user_id):
+    transactions = Transaction.select()
+    user_transactions = []
+    for transaction in transactions:
+        if transaction.sender_id == user_id or transaction.recipient_id == user_id:
+            user_transactions.append(transaction)
+    return user_transactions
 
