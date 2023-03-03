@@ -1,6 +1,6 @@
 from database.models import *
-import models
-from models import *
+
+from . models import *
 
 
 db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
