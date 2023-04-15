@@ -12,3 +12,9 @@ u can try is by using command --uvicorn reload
 for run project:
  1. cd app.py
  2. python app.py
+
+
+
+
+
+###Email sender project
