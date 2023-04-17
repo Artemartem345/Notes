@@ -15,6 +15,11 @@ For start project on linux:
 - Python 3.10+
 - Flet library
 - Linux OS
+- Mysql 
+- OOP
+
+
+
 
 
 # Make a list of things to do today!
