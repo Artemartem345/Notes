@@ -7,5 +7,15 @@ For start project on linux:
 3. Start app
 4. Enjoy!
 
-#Make a list of things to do today!
+
+
+
+### info about this project
+
+- Python 3.10+
+- Flet library
+- Linux OS
+
+
+# Make a list of things to do today!
 
