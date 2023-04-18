@@ -5,7 +5,7 @@ For start project on linux:
 1. Open folder flet_proj
 2. Go to dist
 3. Start app
-4. Enjoy!
+4. Enjoy
 
 
 
@@ -27,7 +27,7 @@ For start project on linux:
 ## How to use this project
 
 
-After you run this project you'll see the window with the one plus on it. Press it. You will add your first note! After that you can edit your note or just delete it. Your notes will be saved  even if you close the project. For edit your note press on the pencil on your added note and edit this as you want. for delete your note press on the rubbish button close to pencil and just press it. Note will be deleted
+After you run this project you'll see the window with the one plus on it. Press it. You will add your first note After that you can edit your note or just delete it. Your notes will be saved  even if you close the project. For edit your note press on the pencil on your added note and edit this as you want. for delete your note press on the rubbish button close to pencil and just press it. Note will be deleted
 
 
 ## Build
