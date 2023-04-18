@@ -31,5 +31,10 @@ For start project on linux:
 
 ![изображение](https://user-images.githubusercontent.com/105593765/232838217-24bd5d7f-5c8c-4baf-9e75-a40d15a72836.png)
 
+
+
+
+![изображение](https://user-images.githubusercontent.com/105593765/232838931-c1f73927-2349-4da5-83db-c42c0865e78c.png)
+
 # Make a list of things to do today!
 
