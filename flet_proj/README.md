@@ -27,7 +27,7 @@ For start project on linux:
 ## How to use this project
 
 
-### After you run this project you'll see the window with the one plus on it. Press it. You will add your first note! After that you can edit your note or just delete it. Your notes will be saved at even if you close the project. 
+### After you run this project you'll see the window with the one plus on it. Press it. You will add your first note! After that you can edit your note or just delete it. Your notes will be saved  even if you close the project. 
 
 
 # Make a list of things to do today!
