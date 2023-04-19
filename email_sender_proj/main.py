@@ -12,26 +12,27 @@ def send_email(message):
     check this out:
     https://www.howto-outlook.com/howto/gmailoauth.htm
     '''
-    sender = 'YOUR GMAIL'
-    password = 'YOUR PASSWORD'
+    sender = 'Popovartem3412@gmail.com'
+    password = 'llkktcjfgsyoziex'
     
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
     
     try:
         server.login(sender, password)
-        server.sendmail(sender, 'RECIPIENT', message)
+        server.sendmail(sender, 'dergonter456@gmail.com', message)
         
         return 'Email sent successfully!'
     except Exception as _ex:
         return f'{_ex}\n check your password or login! '
 
-def main():
-    message = input('Enter message: ')
-    print(send_email(message=message))
+
     
     
 
 
 if __name__ == '__main__':
-    main()
+    message = input('enter your message: ')
+    send_email(message=message)
+    
+    
