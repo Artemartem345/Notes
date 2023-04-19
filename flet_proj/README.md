@@ -16,7 +16,7 @@ For start project on linux:
 - Flet library
 - Linux OS
 - Mysql 
-- OOP
+
 
 
 
