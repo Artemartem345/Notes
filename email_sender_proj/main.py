@@ -13,7 +13,7 @@ def send_email(message):
     https://www.howto-outlook.com/howto/gmailoauth.htm
     '''
     sender = 'Popovartem3412@gmail.com'
-    password = 'llkktcjfgsyoziex'
+    password = 'cjlzrycxhkwagqrb'
     
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
