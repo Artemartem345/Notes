@@ -1,9 +1,13 @@
 import smtplib
 import os
-from email.mime.text import MIMEText
+import tkinter as Tk
+from tkinter import ttk
 
 
-def send_email(message):
+
+
+
+def send_email(message:str) -> None:
     '''
     This function sends an email to the recipient on gmail
     :param message:
@@ -34,5 +38,4 @@ def send_email(message):
 if __name__ == '__main__':
     message = input('enter your message: ')
     send_email(message=message)
-    
     
