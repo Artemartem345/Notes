@@ -16,8 +16,8 @@ def send_email(message:str) -> None:
     check this out:
     https://www.howto-outlook.com/howto/gmailoauth.htm
     '''
-    sender = 'Popovartem3412@gmail.com'
-    password = 'cjlzrycxhkwagqrb'
+    sender = 'YOUR GMAIL'
+    password = 'YOUR_APP_PASSWORD'
     
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
